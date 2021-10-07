@@ -1,5 +1,4 @@
 from dearpygui.dearpygui import *
-import os 
 
 def hover_buttons_IN ( sender, data, user ):
     if   user == "Visualização geral"  :
@@ -48,7 +47,7 @@ def init_inicio      ( windows :dict, callback ):
         add_button(  label ="Parametros", id = 1_2_4, arrow  = False, callback = callback, user_data   = "Parametros")
         add_button(  label ="Sair"      , id = 1_2_5, arrow  = False, callback = callback, user_data   = "Sair"      )
         
-    with window(     label = 'Main'               , id = 1_3  , no_move= True , no_close = True       , no_title_bar= True, no_resize= True) as Main_IN:
+    with window(  label = 'Main'               , id = 1_3  , no_move= True , no_close = True       , no_title_bar= True, no_resize= True) as Main_IN:
         windows['Inicio'].append( Main_IN )
         add_text( 'HOVER SOME ITEM AT THE LEFT SIDE...', id = 1_3_1)
         add_hover_handler( parent = 1_2_1, callback = hover_buttons_IN, user_data = "Inicio"    )

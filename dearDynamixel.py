@@ -11,6 +11,12 @@ from views.sensores import *
 from views.parametros import *
 
 
+'''
+    CONTROLE   -> 2_0
+    SENSORES   -> 3_0
+    PARAMETROS -> 4_0
+'''
+
 windows = {
             "Inicio"    : [  ],
             "Controle"  : [  ],
@@ -62,14 +68,23 @@ maximize_viewport()
 set_primary_window    ( main_window, True    )
 
 init_inicio(windows, change_menu)
+plots = init_controle(windows, change_menu)
 
-change_menu(None, None, 'Inicio' )
+count = 0 
+import math 
+
+change_menu(None, None, 'Controle' )
 while is_dearpygui_running():
     w, h = get_item_width( 1_0 ), get_item_height( 1_0 )
     render_dearpygui_frame() 
+
+    if get_frame_count()%2 == 0:
+        count += 1 
+        for plot in plots:
+            plot.append( [count, 10*math.sin(math.radians(2*count))] )
     
     if   window_opened == "Inicio"    : render_inicio () 
-    elif window_opened == "Controle"  : render_inicio() 
+    elif window_opened == "Controle"  : render_controle( plots ) 
     elif window_opened == "Sensores"  : render_inicio()
     elif window_opened == "Parametros": render_inicio()     
     elif window_opened == "Sair"      : render_inicio()  
