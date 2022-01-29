@@ -1,62 +1,115 @@
-from dearpygui.dearpygui import *
+import dearpygui.dearpygui as dpg 
+import time 
+import sys 
+import os
 
-def hover_buttons_IN ( sender, data, user ):
-    if   user == "Visualização geral"  :
-        configure_item( 1_3_1, default_value = user )
-    elif user == "Posição do sol"      :
-        configure_item( 1_3_1, default_value = user )
-    elif user == "Atuadores"           :
-        configure_item( 1_3_1, default_value = user )
-    elif user == "Atuação da base"     :
-        configure_item( 1_3_1, default_value = user )
-    elif user == "Atuação da elevação" :
-        configure_item( 1_3_1, default_value = user )
-    elif user == "Configurações"       :
-        configure_item( 1_3_1, default_value = user )
+PATH = os.path.dirname(__file__).removesuffix('views')
+sys.path.insert( 0, PATH )
 
-def render_inicio    ( ):
-    w , h = get_item_width( 1_0 ), get_item_height( 1_0 )
+def add_image_loaded( img_path ):
+    w, h, c, d = dpg.load_image( img_path )
+    with dpg.texture_registry() as reg_id : 
+        return dpg.add_static_texture( w, h, d, parent = reg_id )
+
+def closing_dpg( sender, data, user ): 
+    with dpg.window( pos = [ dpg.get_item_width('mainWindow')/2.5, dpg.get_item_height('mainWindow')/2.5]): 
+        dpg.add_text( 'Obrigado por usar nosso programa\nEle irá encerrar em instantes' )
+    time.sleep(2)
+    dpg.stop_dearpygui() 
+
+# REGISTRIES ESPECIFIC 
+img_fundo  = add_image_loaded( PATH + '\\public\\fundo.png'              )
+img_logo   = add_image_loaded( PATH + '\\public\\distico_UFSM.png'       )
+img_inici  = add_image_loaded( PATH + '\\public\\init_img\\img_inici.jpg')
+img_contr  = add_image_loaded( PATH + '\\public\\init_img\\img_contr.png')
+img_senso  = add_image_loaded( PATH + '\\public\\init_img\\img_senso.png')
+img_param  = add_image_loaded( PATH + '\\public\\init_img\\img_param.jpg')
+img_sair   = add_image_loaded( PATH + '\\public\\init_img\\img_sair.png' ) 
+
+WinInitHeader  = dpg.window 
+WinInitLateral = dpg.window
+WinInitMain    = dpg.window
+
+# HANDLER_REGISTERS / THEMES 
+def handlers_and_themes_inicio( ): 
+    # HANDLER CALLBACK_FUNCTION 
+    def hover_buttons ( sender, data, user ):
+        if   data == 9_12_1: dpg.configure_item( 9_13_11, texture_tag = img_inici )
+        elif data == 9_12_2: dpg.configure_item( 9_13_11, texture_tag = img_contr )
+        elif data == 9_12_3: dpg.configure_item( 9_13_11, texture_tag = img_senso )
+        elif data == 9_12_4: dpg.configure_item( 9_13_11, texture_tag = img_param )
+        elif data == 9_12_5: dpg.configure_item( 9_13_11, texture_tag = img_sair  )
+
+    # HANDLERS 
+    with dpg.item_handler_registry( ) as handler_hover:
+        dpg.add_item_hover_handler( callback = hover_buttons )
+    dpg.bind_item_handler_registry( item = 9_12_1, handler_registry = handler_hover )
+    dpg.bind_item_handler_registry( item = 9_12_2, handler_registry = handler_hover )
+    dpg.bind_item_handler_registry( item = 9_12_3, handler_registry = handler_hover )
+    dpg.bind_item_handler_registry( item = 9_12_4, handler_registry = handler_hover )
+    dpg.bind_item_handler_registry( item = 9_12_5, handler_registry = handler_hover )
     
-    configure_item( 1_1 , width = w-15     , height = h*3/10    , pos = [ 10       , 25             ] )
-    configure_item( 1_2 , width = w/3      , height = h*6.60/10 , pos = [ 10       , (h//10)*3 + 30 ] )
-    configure_item( 1_3 , width = w*2/3-20 , height = h*6.60/10 , pos = [ w//3 + 15, (h//10)*3 + 30 ] )
+    # THEMES 
+    with dpg.theme( tag = 100_02 ) as theme_no_win_border:
+        with dpg.theme_component( dpg.mvAll):
+            dpg.add_theme_style( dpg.mvStyleVar_WindowBorderSize, 0 , category = dpg.mvThemeCat_Core )
+    dpg.bind_item_theme( WinInitHeader , theme_no_win_border)
+    dpg.bind_item_theme( WinInitLateral, theme_no_win_border)
+    dpg.bind_item_theme( WinInitMain   , theme_no_win_border)
 
-    w_header , h_header  = get_item_width( 1_1 ), get_item_height( 1_1 )
-    w_lateral, h_lateral = get_item_width( 1_2 ), get_item_height( 1_2 )
+# MAIN FUNCTIONS 
+def resize_inicio( ): 
+    w , h = dpg.get_item_width('mainWindow'), dpg.get_item_height('mainWindow')
+    dpg.configure_item( WinInitHeader  , width = w-15     , height = h*3/10    , pos = [ 10       , 25             ] )
+    dpg.configure_item( WinInitLateral , width = w/3      , height = h*6.60/10 , pos = [ 10       , (h//10)*3 + 30 ] )
+    dpg.configure_item( WinInitMain    , width = w*2/3-20 , height = h*6.60/10 , pos = [ w//3 + 15, (h//10)*3 + 30 ] )
 
+    w_header , h_header  = dpg.get_item_width( WinInitHeader ), dpg.get_item_height( WinInitHeader )
+    dpg.configure_item( 911_1  , width = w_header-16 , height = h_header-16 )  
+    dpg.configure_item( 911_11 , pmin  = (-30,-30)   , pmax   = ( w, round( h*3/10)*2 ))
+    dpg.configure_item( 911_12 , pmin  = (10,10)     , pmax   = (350,200) )
 
-    v_spacing = h_lateral // 6  # LATERAL 
-    configure_item( 1_2_1, width = w//3 - 15, height = v_spacing ) 
-    configure_item( 1_2_2, width = w//3 - 15, height = v_spacing ) 
-    configure_item( 1_2_3, width = w//3 - 15, height = v_spacing ) 
-    configure_item( 1_2_4, width = w//3 - 15, height = v_spacing ) 
-    configure_item( 1_2_5, width = w//3 - 15, height = v_spacing )  
+    v_spacing = dpg.get_item_height( WinInitLateral ) // 6  
+    dpg.configure_item( 912_1, width = w//3 - 15, height = v_spacing ) 
+    dpg.configure_item( 912_2, width = w//3 - 15, height = v_spacing ) 
+    dpg.configure_item( 912_3, width = w//3 - 15, height = v_spacing ) 
+    dpg.configure_item( 912_4, width = w//3 - 15, height = v_spacing ) 
+    dpg.configure_item( 912_5, width = w//3 - 15, height = v_spacing )  
 
-def init_inicio      ( windows :dict, callback ): 
-    with theme( id = 'no_win_border'):
-        add_theme_style( mvStyleVar_WindowBorderSize, 0 , category = mvThemeCat_Core )
+    dpg.configure_item( 913_1 , width = (w*2/3-20)*0.99 , height = (h*6.60/10)*0.875 )
+    dpg.configure_item( 913_11, pmax  = [ (w*2/3-20)*0.99 , (h*6.60/10)*0.8750 ]  )
+    dpg.configure_item( 913_12, pos   = [ (w*2/3-20)*0.99//3 , 50 ])
 
-    with window( label = 'Header' , id = 1_1, pos = [10, 25], no_move= True, no_close= True, no_title_bar= True, no_resize= True ) as Header_IN:    
-        windows['Inicio'].append( Header_IN )
-    with window( label = 'Lateral', id = 1_2, no_move= True, no_close= True, no_title_bar= True, no_resize= True ) as Lateral_IN:
-        windows['Inicio'].append( Lateral_IN )
-        add_spacing( count = 4 )
-        add_button(  label ="Inicio"    , id = 1_2_1, arrow  = False, callback = callback, user_data   = "Inicio"    )
-        add_button(  label ="Controle"  , id = 1_2_2, arrow  = False, callback = callback, user_data   = "Controle"  )
-        add_button(  label ="Sensores"  , id = 1_2_3, arrow  = False, callback = callback, user_data   = "Sensores"  )
-        add_button(  label ="Parametros", id = 1_2_4, arrow  = False, callback = callback, user_data   = "Parametros")
-        add_button(  label ="Sair"      , id = 1_2_5, arrow  = False, callback = callback, user_data   = "Sair"      )
+def render_inicio ( ):
+    if dpg.get_frame_count() % 10 == 0: 
+        resize_inicio()    
+
+def init_inicio ( windows :dict, callback ): 
+    global WinInitHeader    
+    global WinInitLateral
+    global WinInitMain
+
+    with dpg.window( label = 'Header' , tag = dpg.generate_uuid(), pos = [10, 25], no_move= True, no_close= True, no_title_bar= True, no_resize= True ) as WinInitHeader:    
+        windows['Inicio'].append( WinInitHeader )  
+        with dpg.drawlist( tag = 9_11_1, width = -1, height = - 1 ):      
+            dpg.draw_image  ( tag = 9_11_11, label = 'imgFundo', texture_tag = img_fundo, pmin = (0,0), pmax = (1,1) ) 
+            dpg.draw_image  ( tag = 9_11_12, label = 'imgLogo' , texture_tag = img_logo , pmin = (0,0), pmax = (1,1) )
+            # ADICIONAR O TÍTULO DO ATUADOR E UMA FOTINHO DELE 
+
+    with dpg.window( label = 'Lateral', tag = dpg.generate_uuid(), no_move= True, no_close= True, no_title_bar= True, no_resize= True ) as WinInitLateral: 
+        windows['Inicio'].append( WinInitLateral )
+        dpg.add_spacer(  width = 4 )
+        dpg.add_button(  label = "Inicio"    , tag = 9_12_1, arrow  = False, callback = callback   , user_data   = "Inicio"   )
+        dpg.add_button(  label = "Controle"  , tag = 9_12_2, arrow  = False, callback = callback   , user_data   = "Controle" )
+        dpg.add_button(  label = "Sensores"  , tag = 9_12_3, arrow  = False, callback = callback   , user_data   = "Sensores" )
+        dpg.add_button(  label = "Conexão"   , tag = 9_12_4, arrow  = False, callback = callback   , user_data   = "Conexão"  )
+        dpg.add_button(  label = "Sair"      , tag = 9_12_5, arrow  = False, callback = closing_dpg, user_data   = "Sair"     )
         
-    with window(  label = 'Main'               , id = 1_3  , no_move= True , no_close = True       , no_title_bar= True, no_resize= True) as Main_IN:
-        windows['Inicio'].append( Main_IN )
-        add_text( 'HOVER SOME ITEM AT THE LEFT SIDE...', id = 1_3_1)
-        add_hover_handler( parent = 1_2_1, callback = hover_buttons_IN, user_data = "Inicio"    )
-        add_hover_handler( parent = 1_2_2, callback = hover_buttons_IN, user_data = "Controle"  )
-        add_hover_handler( parent = 1_2_3, callback = hover_buttons_IN, user_data = "Sensores"  )
-        add_hover_handler( parent = 1_2_4, callback = hover_buttons_IN, user_data = "Parametros")
-        add_hover_handler( parent = 1_2_5, callback = hover_buttons_IN, user_data = "Sair"      )
-        
-    set_item_theme(1_1, 'no_win_border')
-    set_item_theme(1_2, 'no_win_border')
-    set_item_theme(1_3, 'no_win_border')
-
+    with dpg.window(  label = 'Main'  , tag = dpg.generate_uuid()  , no_move= True , no_close = True       , no_title_bar= True, no_resize= True) as WinInitMain:
+        windows['Inicio'].append( WinInitMain )
+        with dpg.drawlist ( tag = 9_13_1, width = 1000, height = 1000 ): 
+            dpg.draw_image( tag = 9_13_11, label = 'imgMain', texture_tag = img_inici, pmin = (0,0), pmax = (100,100) ) 
+            dpg.draw_text ( tag = 9_13_12, pos = [500/500], text = '', size = 20 )
+    
+    resize_inicio() 
+    handlers_and_themes_inicio()

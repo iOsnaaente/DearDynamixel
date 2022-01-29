@@ -21,6 +21,7 @@ class Atuador:
 
     BAUDRATE = 0
 
+
     def __init__(self, ID1, ID2, BAUDRATE = 1000000, search_for_serial = True, COMArduino = "", COMRs485 = "" ):
         # Criação do atuador 
         self.BAUDRATE = BAUDRATE
@@ -40,12 +41,14 @@ class Atuador:
 
         self.offset = self.get_offset()
     
+
     # salva os dados obtidos 
     def save_data(self, data, dest = ''):
         if dest == '' : 
             dest = 'data.txt'
         with open(dest, 'a') as f:
             f.write(data + '\n')
+
 
     # Calcula o offset  
     def get_offset(self):       
@@ -60,6 +63,7 @@ class Atuador:
         self.angle_motor_1 = angle1
         self.angle_motor_2 = angle2 
         self.offset = self.get_offset()
+
 
     def get_real_axis(self):
         # lendo dados do sensor 
@@ -129,5 +133,6 @@ class Atuador:
 
             if device == "Arduino":
                 self.comport_arduino = Serial(comport, baudrate= self.BAUDRATE)
+            
             elif device == "RS485":
                 self.comport_dynamixels = pd.DxlComm(port=comport, baudrate= self.BAUDRATE)

@@ -6,7 +6,7 @@ Supports both Protocol 1 and Protocol 2.0 dynamixels.
 Most of the code here was taken from the dynamixel_sdk examples and previous PyDynamixel library.
 """
 
-from dynamixel_sdk import *
+from dynamixel_sdk import * 
 from math import pi
 import sys
 
