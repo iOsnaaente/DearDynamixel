@@ -135,4 +135,4 @@ class Atuador:
                 self.comport_arduino = Serial(comport, baudrate= self.BAUDRATE)
             
             elif device == "RS485":
-                self.comport_dynamixels = pd.DxlComm(port=comport, baudrate= self.BAUDRATE)
+                self.comport_dynamixels = pd.DxlComm(port = comport, baudrate = self.BAUDRATE)

@@ -9,7 +9,7 @@ with dpg.theme( ) as detheme:
 
 # CONFIGURAÇÃO DA FONTE e THEMES - INICIO DO COD. 
 with dpg.font_registry( ):
-    defont = dpg.add_font("fonts\\verdana.ttf", 14 )
+    defont = dpg.add_font("utils\\fonts\\verdana.ttf", 14 )
 
 #   APPLY DEFAULT THEMES AND FONTS
 dpg.bind_theme( detheme )

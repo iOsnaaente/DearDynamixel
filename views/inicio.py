@@ -17,6 +17,13 @@ def closing_dpg( sender, data, user ):
     time.sleep(2)
     dpg.stop_dearpygui() 
 
+def show_hide_window( sender, data, user ):
+    if dpg.get_item_configuration(sender)['show'] == False: 
+        if data:
+            dpg.show_item( user )
+        else: 
+            dpg.hide_item( user )
+       
 # REGISTRIES ESPECIFIC 
 img_fundo  = add_image_loaded( PATH + '\\public\\fundo.png'              )
 img_logo   = add_image_loaded( PATH + '\\public\\distico_UFSM.png'       )
@@ -99,11 +106,11 @@ def init_inicio ( windows :dict, callback ):
     with dpg.window( label = 'Lateral', tag = dpg.generate_uuid(), no_move= True, no_close= True, no_title_bar= True, no_resize= True ) as WinInitLateral: 
         windows['Inicio'].append( WinInitLateral )
         dpg.add_spacer(  width = 4 )
-        dpg.add_button(  label = "Inicio"    , tag = 9_12_1, arrow  = False, callback = callback   , user_data   = "Inicio"   )
-        dpg.add_button(  label = "Controle"  , tag = 9_12_2, arrow  = False, callback = callback   , user_data   = "Controle" )
-        dpg.add_button(  label = "Sensores"  , tag = 9_12_3, arrow  = False, callback = callback   , user_data   = "Sensores" )
-        dpg.add_button(  label = "Conexão"   , tag = 9_12_4, arrow  = False, callback = callback   , user_data   = "Conexão"  )
-        dpg.add_button(  label = "Sair"      , tag = 9_12_5, arrow  = False, callback = closing_dpg, user_data   = "Sair"     )
+        dpg.add_button(  label = "Inicio"    , tag = 9_12_1, arrow  = False, callback = callback         , user_data   = "Inicio"   )
+        dpg.add_button(  label = "Controle"  , tag = 9_12_2, arrow  = False, callback = callback         , user_data   = "Controle" )
+        dpg.add_button(  label = "Sensores"  , tag = 9_12_3, arrow  = False, callback = callback         , user_data   = "Sensores" )
+        dpg.add_button(  label = "Conexão"   , tag = 9_12_4, arrow  = False, callback = show_hide_window , user_data   = 42_0  )
+        dpg.add_button(  label = "Sair"      , tag = 9_12_5, arrow  = False, callback = closing_dpg      , user_data   = "Sair"     )
         
     with dpg.window(  label = 'Main'  , tag = dpg.generate_uuid()  , no_move= True , no_close = True       , no_title_bar= True, no_resize= True) as WinInitMain:
         windows['Inicio'].append( WinInitMain )
